@@ -1,0 +1,18 @@
+name: Security Check
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  push:
+    paths:
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: taiki-e/install-action@cargo-deny
+      - name: Audit scan
+        run: cargo deny check advisories
+      - run: echo "This job's status is ${{ job.status }}."
